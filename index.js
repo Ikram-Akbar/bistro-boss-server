@@ -7,6 +7,7 @@ require("dotenv").config();
 
 //middleware :
 app.use(cors());
+app.use(express.json());
 
 // app.use(cors);
 app.use(express.json());
@@ -29,7 +30,7 @@ async function run() {
 
     const menuCollection = client.db("Bistro-Boss").collection("Menu");
     const reviewCollection = client.db("Bistro-Boss").collection("Reviews");
-    const CartCollection = client.db("Bistro-Boss").collection("Carts");
+    const CartCollection = client.db("Bistro-Boss").collection("carts");
 
 
     app.get("/menu", async (req, res) => {
@@ -43,10 +44,22 @@ async function run() {
     })
 
     //cart collection POST
-    app.post("/carts", (req, res) => {
+    app.get("/carts", async (req, res) => {
+      const email = req.query.email;
+   
+      if (!email) {
+        res.send([])
+      } else {
+        const query = { email: email };
+        const result = await CartCollection.find(query).toArray();
+        res.send(result);
+      }
+
+    })
+    app.post("/carts", async (req, res) => {
       const item = req.body;
       console.log(item);
-      const result = CartCollection.insertOne(item);
+      const result = await CartCollection.insertOne(item);
       res.send(result);
     })
     // Send a ping to confirm a successful connection
