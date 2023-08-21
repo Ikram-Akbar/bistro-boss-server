@@ -25,6 +25,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
@@ -34,13 +35,15 @@ async function run() {
     const CartCollection = client.db("Bistro-Boss").collection("carts");
 
     //user Collection :
-
     //GET API: 
+
     app.get("/users", async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     })
+
     //POST API :
+
     app.post("/users", async (req, res) => {
       const users = req.body;
       const query = { email: users.email };
@@ -52,8 +55,10 @@ async function run() {
         return { message: "user has already exist" }
       }
     })
+
     //Admin api 
     //PATCH API :
+
     app.patch("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -64,17 +69,27 @@ async function run() {
       }
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.send(result);
+    });
+
+    //Admin Delete 
+    //DELETE API : 
+    app.delete("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
+      res.send(result);
+
     })
 
 
-
-    //Menu Collection : 
-    // GET API : 
+    //Menu Collection: 
+    //GET API: 
 
     app.get("/menu", async (req, res) => {
       const result = await menuCollection.find().toArray();
       res.send(result)
     });
+    
 
     //Review Collection : 
     // GET API : 
