@@ -36,17 +36,14 @@ async function run() {
     //Post Api:
     app.post("/users", async (req, res) => {
       const users = req.body;
-      console.log(users);
       const query = { email: users.email };
       const existingUser = await usersCollection.findOne(query);
-      console.log(existingUser);
       if (!existingUser) {
         const result = await usersCollection.insertOne(users);
         res.send(result)
       } else {
         return { message: "user has already exist" }
       }
-
     })
 
 
@@ -97,8 +94,6 @@ async function run() {
       res.send(result)
     })
 
-
-
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -111,7 +106,7 @@ async function run() {
 }
 run().catch(console.dir);
 
-//routes:
+//routes- primary routes : 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
