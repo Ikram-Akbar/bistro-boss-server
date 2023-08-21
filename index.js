@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 const app = express();
 const port = 3002;
 
@@ -33,6 +34,14 @@ async function run() {
     const menuCollection = client.db("Bistro-Boss").collection("Menu");
     const reviewCollection = client.db("Bistro-Boss").collection("Reviews");
     const CartCollection = client.db("Bistro-Boss").collection("carts");
+
+    //JWT : 
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1hr" });
+      res.send({ token });
+    })
+
 
     //user Collection :
     //GET API: 
@@ -89,7 +98,7 @@ async function run() {
       const result = await menuCollection.find().toArray();
       res.send(result)
     });
-    
+
 
     //Review Collection : 
     // GET API : 
