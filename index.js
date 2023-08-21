@@ -32,8 +32,15 @@ async function run() {
     const menuCollection = client.db("Bistro-Boss").collection("Menu");
     const reviewCollection = client.db("Bistro-Boss").collection("Reviews");
     const CartCollection = client.db("Bistro-Boss").collection("carts");
+
     //user Collection :
-    //Post Api:
+
+    //GET API: 
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    })
+    //POST API :
     app.post("/users", async (req, res) => {
       const users = req.body;
       const query = { email: users.email };
@@ -45,6 +52,20 @@ async function run() {
         return { message: "user has already exist" }
       }
     })
+    //Admin api 
+    //PATCH API :
+    app.patch("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "admin"
+        },
+      }
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
 
 
     //Menu Collection : 
@@ -64,6 +85,7 @@ async function run() {
     })
 
     //cart collection-- 
+
     // GET Method : 
 
     app.get("/carts", async (req, res) => {
@@ -78,7 +100,7 @@ async function run() {
       }
 
     })
-    // POST Method : 
+    // POST API : 
     app.post("/carts", async (req, res) => {
       const item = req.body;
       console.log(item);
@@ -86,7 +108,7 @@ async function run() {
       res.send(result);
     })
 
-    // DELETE Method : 
+    // DELETE API : 
     app.delete("/carts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
