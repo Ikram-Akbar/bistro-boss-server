@@ -32,13 +32,19 @@ async function run() {
     const menuCollection = client.db("Bistro-Boss").collection("Menu");
     const reviewCollection = client.db("Bistro-Boss").collection("Reviews");
     const CartCollection = client.db("Bistro-Boss").collection("carts");
-//user Collection :
-//Post Api:
-app.post("/users", async(req,res)=>{
-  const users = req.body;
-  const result = await usersCollection.insertOne(users);
-  res.send(result)
-})
+    //user Collection :
+    //Post Api:
+    app.post("/users", async (req, res) => {
+      const users = req.body;
+      const query = { email: users.email };
+      const existingUser = await usersCollection.findOne(query);
+      if (!existingUser) {
+        const result = await usersCollection.insertOne(users);
+        res.send(result)
+      } else {
+        return { message: "user has already exist" }
+      }
+    })
 
 
     //Menu Collection : 
@@ -88,8 +94,6 @@ app.post("/users", async(req,res)=>{
       res.send(result)
     })
 
-
-
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -102,7 +106,7 @@ app.post("/users", async(req,res)=>{
 }
 run().catch(console.dir);
 
-//routes:
+//routes- primary routes : 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
