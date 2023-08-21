@@ -52,6 +52,20 @@ async function run() {
         return { message: "user has already exist" }
       }
     })
+    //Admin api 
+    //PATCH API :
+    app.patch("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "admin"
+        },
+      }
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
 
 
     //Menu Collection : 
@@ -71,7 +85,7 @@ async function run() {
     })
 
     //cart collection-- 
-    
+
     // GET Method : 
 
     app.get("/carts", async (req, res) => {
